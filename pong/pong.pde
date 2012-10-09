@@ -13,7 +13,9 @@
 #define BUTTON_ONE_PIN 2 //digital to start game
 // #define BUTTON_TWO_PIN 3 //digital to reset and go back to main menu
 
-#define PADDLE_HEIGHT 14
+const int AUDIO_PIN = 10;
+
+#define PADDLE_HEIGHT 10
 #define PADDLE_WIDTH 1
 
 #define RIGHT_PADDLE_X (TV.horz_res()-4)
@@ -126,6 +128,8 @@ void playerScored(byte player)
 	}
 
 	ballVolX = -ballVolX;
+	ballVolY = 2;
+	ballY = TV.vert_res() / 2;
 }
 
 void drawBox()
@@ -201,12 +205,17 @@ void setup()
 	//   Serial.begin(9600);
 	x = 0;
 	y = 0;
-	TV.start_render(_NTSC); //for devices with only 1k sram(m168) use TV.begin(_NTSC,128,56)
+	TV.start_render(_PAL); //for devices with only 1k sram(m168) use TV.begin(_NTSC,128,56)
 
 	ballX = TV.horz_res() / 2;
 	ballY = TV.vert_res() / 2;
 
-//  pinMode(BUTTON_ONE_PIN, INPUT);      // sets the digital pin as output
+	pinMode(BUTTON_ONE_PIN, INPUT);      // sets the digital pin as output
+}
+
+void pong_tone(int frequency)
+{
+	tone(AUDIO_PIN, frequency);
 }
 
 void loop()
@@ -224,8 +233,10 @@ void loop()
 
 	if (state == IN_GAMEB)
 	{
-		if (frame % 3 == 0)
-		{ //every third frame
+		bool scored = false;
+
+		if (frame % 2 == 0)
+		{ //every n frame
 			ballX += ballVolX;
 			ballY += ballVolY;
 
@@ -233,8 +244,9 @@ void loop()
 			if (ballY <= 1 || ballY >= TV.vert_res() - 1)
 			{
 				ballVolY = -ballVolY;
-				delay(100);
-				TV.tone(2000, 30);
+				//delay(100);
+				//TV.tone(2000, 30);
+				pong_tone(2100);
 			}
 
 			// test left side for wall hit    
@@ -243,8 +255,9 @@ void loop()
 				ballVolX = -ballVolX;
 				ballVolY += 2 * ((ballY - leftPaddleY) - (PADDLE_HEIGHT / 2))
 						/ (PADDLE_HEIGHT / 2);
-				delay(100);
-				TV.tone(2000, 30);
+				//delay(100);
+				//TV.tone(2000, 30);
+				pong_tone(2000);
 			}
 
 			// test right side for wall hit     
@@ -254,8 +267,9 @@ void loop()
 				ballVolX = -ballVolX;
 				ballVolY += 2 * ((ballY - rightPaddleY) - (PADDLE_HEIGHT / 2))
 						/ (PADDLE_HEIGHT / 2);
-				delay(100);
-				TV.tone(2000, 30);
+				//delay(100);
+				//TV.tone(2000, 30);
+				pong_tone(2000);
 			}
 
 			//limit vertical speed
@@ -269,21 +283,34 @@ void loop()
 			{
 				playerScored(RIGHT);
 				// sound 
-				delay(100);
-				TV.tone(500, 300);
+				//delay(100);
+				//TV.tone(500, 300);
+				//pong_tone(500, 300);
+				scored = true;
 			}
 			if (ballX >= TV.horz_res() - 1)
 			{
 				playerScored(LEFT);
 				// sound 
-				delay(100);
-				TV.tone(500, 300);
+				//delay(100);
+				//TV.tone(500, 300);
+				//pong_tone(500, 300);
+				scored = true;
 			}
 		}
 
 //    if(button1Status) Serial.println((int)ballVolX);
 
 		drawGameScreen();
+
+		if (scored)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				pong_tone(500 - (20 * i));
+				TV.delay_frame(1);
+			}
+		}
 	}
 
 	if (state == GAME_OVER)
@@ -305,6 +332,7 @@ void loop()
 	}
 
 	TV.delay_frame(1);
+	noTone(AUDIO_PIN);
 	if (++frame == 60)
 		frame = 0; //increment and/or reset frame counter
 }
