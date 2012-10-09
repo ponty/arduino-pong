@@ -7,13 +7,8 @@
  */
 
 #include <TVout.h>
+#include "hw_config.h"
 
-#define WHEEL_ONE_PIN 0 //analog
-#define WHEEL_TWO_PIN 1 //analog
-#define BUTTON_ONE_PIN 2 //digital to start game
-// #define BUTTON_TWO_PIN 3 //digital to reset and go back to main menu
-
-const int AUDIO_PIN = 10;
 
 #define PADDLE_HEIGHT 10
 #define PADDLE_WIDTH 1
@@ -59,9 +54,7 @@ int state = IN_MENU;
 void processInputs()
 {
 	wheelOnePosition = analogRead(WHEEL_ONE_PIN);
-	// delay(50);
 	wheelTwoPosition = analogRead(WHEEL_TWO_PIN);
-	// delay(50);
 	button1Status = (digitalRead(BUTTON_ONE_PIN) == LOW);
 
 	//  button2Status = (digitalRead(BUTTON_TWO_PIN) == LOW);
@@ -244,8 +237,6 @@ void loop()
 			if (ballY <= 1 || ballY >= TV.vert_res() - 1)
 			{
 				ballVolY = -ballVolY;
-				//delay(100);
-				//TV.tone(2000, 30);
 				pong_tone(2100);
 			}
 
@@ -255,8 +246,6 @@ void loop()
 				ballVolX = -ballVolX;
 				ballVolY += 2 * ((ballY - leftPaddleY) - (PADDLE_HEIGHT / 2))
 						/ (PADDLE_HEIGHT / 2);
-				//delay(100);
-				//TV.tone(2000, 30);
 				pong_tone(2000);
 			}
 
@@ -267,8 +256,6 @@ void loop()
 				ballVolX = -ballVolX;
 				ballVolY += 2 * ((ballY - rightPaddleY) - (PADDLE_HEIGHT / 2))
 						/ (PADDLE_HEIGHT / 2);
-				//delay(100);
-				//TV.tone(2000, 30);
 				pong_tone(2000);
 			}
 
@@ -282,19 +269,11 @@ void loop()
 			if (ballX <= 1)
 			{
 				playerScored(RIGHT);
-				// sound 
-				//delay(100);
-				//TV.tone(500, 300);
-				//pong_tone(500, 300);
 				scored = true;
 			}
 			if (ballX >= TV.horz_res() - 1)
 			{
 				playerScored(LEFT);
-				// sound 
-				//delay(100);
-				//TV.tone(500, 300);
-				//pong_tone(500, 300);
 				scored = true;
 			}
 		}
