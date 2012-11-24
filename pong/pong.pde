@@ -204,6 +204,7 @@ void setup()
 	ballY = TV.vert_res() / 2;
 
 	pinMode(pin_button1, INPUT);      
+	digitalWrite(pin_button1, HIGH);       // turn on pullup resistors
 }
 
 void pong_tone(int frequency)
