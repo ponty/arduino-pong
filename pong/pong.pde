@@ -53,19 +53,19 @@ int state = IN_MENU;
 
 void processInputs()
 {
-	wheelOnePosition = analogRead(WHEEL_ONE_PIN);
-	wheelTwoPosition = analogRead(WHEEL_TWO_PIN);
-	button1Status = (digitalRead(BUTTON_ONE_PIN) == LOW);
+	wheelOnePosition = analogRead(pin_wheel1);
+	wheelTwoPosition = analogRead(pin_wheel2);
+	button1Status = (digitalRead(pin_button1) == LOW);
 
 	//  button2Status = (digitalRead(BUTTON_TWO_PIN) == LOW);
 	if ((button1Status == true) && (state == GAME_OVER))
 	{
 		drawMenu();
 	}
-//   button1Status = (digitalRead(BUTTON_ONE_PIN));
+//   button1Status = (digitalRead(pin_button1));
 
 //cdubois
-//  Serial.println(BUTTON_ONE_PIN);
+//  Serial.println(pin_button1);
 // Serial.println(BUTTON_TWO_PIN);
 //   delay(500);
 	// Serial.println(button1Status);
@@ -203,12 +203,12 @@ void setup()
 	ballX = TV.horz_res() / 2;
 	ballY = TV.vert_res() / 2;
 
-	pinMode(BUTTON_ONE_PIN, INPUT);      // sets the digital pin as output
+	pinMode(pin_button1, INPUT);      
 }
 
 void pong_tone(int frequency)
 {
-	tone(AUDIO_PIN, frequency);
+	tone(pin_audio, frequency);
 }
 
 void loop()
@@ -311,7 +311,7 @@ void loop()
 	}
 
 	TV.delay_frame(1);
-	noTone(AUDIO_PIN);
+	noTone(pin_audio);
 	if (++frame == 60)
 		frame = 0; //increment and/or reset frame counter
 }

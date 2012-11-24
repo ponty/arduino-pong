@@ -1,8 +1,7 @@
 
 
-#define WHEEL_ONE_PIN 0 //analog
-#define WHEEL_TWO_PIN 1 //analog
-#define BUTTON_ONE_PIN 2 //digital to start game
-// #define BUTTON_TWO_PIN 3 //digital to reset and go back to main menu
+const int pin_wheel1 = 4; // analog
+const int pin_wheel2 = 5; // analog
+const int pin_button1 = 4;
 
-const int AUDIO_PIN = 10;
+const int pin_audio = 10;
