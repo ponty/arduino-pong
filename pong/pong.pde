@@ -46,6 +46,11 @@
 #define LEFT 0
 #define RIGHT 1
 
+//second paddle
+#define ENABLE_PADDLE2
+#define LEFT_PADDLE_X2 ((TV.horz_res()-4)*2/3)
+#define RIGHT_PADDLE_X2 ((TV.horz_res()-4)*1/3+1)
+
 TVout TV;
 unsigned char x, y;
 
@@ -98,11 +103,13 @@ void drawGameScreen()
 	//draw right paddle
 	rightPaddleY = ((wheelOnePosition / 8) * (TV.vert_res() - PADDLE_HEIGHT))
 			/ 128;
-	x = RIGHT_PADDLE_X;
+    x = RIGHT_PADDLE_X;
 	for (int i = 0; i < PADDLE_WIDTH; i++)
 	{
-		TV.draw_line(x + i, rightPaddleY, x + i, rightPaddleY + PADDLE_HEIGHT,
-				1);
+        TV.draw_line(x + i, rightPaddleY, x + i, rightPaddleY + PADDLE_HEIGHT,1);
+#ifdef ENABLE_PADDLE2
+        TV.draw_line(RIGHT_PADDLE_X2 + i, rightPaddleY, RIGHT_PADDLE_X2 + i, rightPaddleY + PADDLE_HEIGHT,1);
+#endif
 	}
 
 	//draw left paddle
@@ -112,6 +119,9 @@ void drawGameScreen()
 	for (int i = 0; i < PADDLE_WIDTH; i++)
 	{
 		TV.draw_line(x + i, leftPaddleY, x + i, leftPaddleY + PADDLE_HEIGHT, 1);
+#ifdef ENABLE_PADDLE2
+        TV.draw_line(LEFT_PADDLE_X2 + i, leftPaddleY, LEFT_PADDLE_X2 + i, leftPaddleY + PADDLE_HEIGHT,1);
+#endif
 	}
 
 	//draw score
@@ -265,6 +275,16 @@ void loop()
 						/ (PADDLE_HEIGHT / 2);
 				pong_tone(2000);
 			}
+#ifdef ENABLE_PADDLE2
+            if (
+                    //ballVolX< 0 && 
+                    ballX == LEFT_PADDLE_X2+PADDLE_WIDTH-1 && ballY >= leftPaddleY && ballY <= leftPaddleY + PADDLE_HEIGHT){
+                ballVolX = -ballVolX;
+                ballVolY += 2 * ((ballY - leftPaddleY) - (PADDLE_HEIGHT / 2))
+                        / (PADDLE_HEIGHT / 2);
+                pong_tone(2000);
+            }
+#endif
 
 			// test right side for wall hit     
 			if (ballVolX
@@ -275,6 +295,17 @@ void loop()
 						/ (PADDLE_HEIGHT / 2);
 				pong_tone(2000);
 			}
+#ifdef ENABLE_PADDLE2
+            if (
+                    //ballVolX > 0 && 
+                    ballX == RIGHT_PADDLE_X2 && ballY >= rightPaddleY && ballY <= rightPaddleY + PADDLE_HEIGHT)
+            {
+                ballVolX = -ballVolX;
+                ballVolY += 2 * ((ballY - rightPaddleY) - (PADDLE_HEIGHT / 2))
+                        / (PADDLE_HEIGHT / 2);
+                pong_tone(2000);
+            }
+#endif
 
 			//limit vertical speed
 			if (ballVolY > MAX_Y_VELOCITY)
