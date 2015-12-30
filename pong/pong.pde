@@ -6,7 +6,23 @@
  *
  */
 
+// select TVout version:
+//    TVout_R5.91.zip       undefine TVOUT_BETA
+//    TVoutBeta1.zip        define TVOUT_BETA
+#define TVOUT_BETA
+
 #include <TVout.h>
+
+#ifdef TVOUT_BETA
+#include <fontALL.h>
+#define horz_res hres
+#define vert_res vres
+#define start_render begin
+#define _8X8 font8x8
+#define _5X7 font6x8
+#define print_str print
+#endif
+
 #include "hw_config.h"
 
 
