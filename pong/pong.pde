@@ -40,7 +40,7 @@
 #define RIGHT_SCORE_X (TV.horz_res()/2+10)
 #define SCORE_Y 4
 
-#define MAX_Y_VELOCITY 6
+#define MAX_Y_VELOCITY 4
 #define PLAY_TO 7
 
 #define LEFT 0
